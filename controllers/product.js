@@ -1,49 +1,68 @@
-import { findAll, insertOne } from './base';
+import { findAll, findById, insertOne } from './base';
 
-const productsPath = './models/products.json';
+const productsPath = 'Product';
 
 export async function getAllProducts(request, response) {
-  const content = await findAll(productsPath);
-  const result = Object.values(JSON.parse(content.toString()));
-  response.json(result);
+  findAll(productsPath)
+    .then(products => {
+      response.json(products);
+    })
+    .catch(error => {
+      console.error(error);
+      response.status(404).send('Something went wrong');
+    });
 }
 
 export async function getProduct(request, response) {
   const id = request.params.id;
-  const content = await findAll(productsPath);
-  const result = JSON.parse(content.toString())[id];
-  if (result) {
-    response.json(result);
-  } else {
-    response.send(`No product with id = ${id}`);
-  }
+  findById(productsPath, id)
+    .then(product => {
+      if (product) {
+        response.json(product);
+      } else {
+        response.status(404).send(`No product with id: ${id}`);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      response.status(404).send(`Something went wrong`);
+    });
 }
 
 export async function getProductReviews(request, response) {
   const id = request.params.id;
-  const content = await findAll(productsPath);
-  const result = JSON.parse(content.toString())[id];
-  if (result) {
-    const reviews = result.reviews;
-    if (reviews) {
-      response.json(result.reviews);
-    } else {
-      response.status(404);
-      response.send(`No product with id = ${id}`);
-    }
-  } else {
-    response.status(404);
-    response.send(`No product with id = ${id}`);
-  }
+  findById(productsPath, id)
+    .then(product => {
+      if (product) {
+        const reviews = product.reviews;
+        response.json(reviews);
+      } else {
+        response.status(404);
+        response.send(`No product with id = ${id}`);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      response.status(404).send(`No product with id: ${id}`);
+    });
 }
 
 export async function insertProduct(request, response) {
-  console.log(request.body);
-  const newProduct = request.body;
-  const content = await insertOne(productsPath, newProduct);
-  if (content) {
-    response.json(content);
+  const { name, reviews } = request.body;
+  if (!name) {
+    response.status(404).send('Wrong product name');
   } else {
-    response.send(`Something went wrong`);
+    const newProduct = {
+      name,
+      reviews: reviews || [],
+    };
+    insertOne(productsPath, newProduct)
+      .then(product => {
+        response.json(product);
+      })
+      .catch(error => {
+        console.log(error);
+        response.status(404).send('Something went wrong');
+      });
   }
 }

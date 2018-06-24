@@ -1,6 +1,6 @@
 import GoogleStrategy from 'passport-google-oauth20';
 
-import { CONFIG } from '../configs/app.config';
+import { CONFIG } from '../config/app.config';
 
 export const Google = new GoogleStrategy(
   {

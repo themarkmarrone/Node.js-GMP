@@ -1,6 +1,6 @@
 import FacebookStrategy from 'passport-facebook';
 
-import { CONFIG } from '../configs/app.config';
+import { CONFIG } from '../config/app.config';
 
 export const Facebook = new FacebookStrategy(
   {

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { CONFIG } from '../configs/app.config';
+import { CONFIG } from '../config/app.config';
 
 export function checkTokenMiddleware(request, response, next) {
   const token = request.headers['x-access-token'];

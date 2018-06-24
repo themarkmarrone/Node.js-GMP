@@ -1,6 +1,6 @@
 import TwitterStrategy from 'passport-twitter';
 
-import { CONFIG } from '../configs/app.config';
+import { CONFIG } from '../config/app.config';
 
 export const Twitter = new TwitterStrategy(
   {

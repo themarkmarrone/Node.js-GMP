@@ -1,20 +1,30 @@
-import { findAll } from './base';
+import { findAll, findById } from './base';
 
-const usersPath = './models/users.json';
+const usersPath = 'User';
 
 export async function getAllUsers(request, response) {
-  const content = await findAll(usersPath);
-  const result = Object.values(JSON.parse(content.toString()));
-  response.json(result);
+  findAll(usersPath)
+    .then(users => {
+      response.json(users);
+    })
+    .catch(error => {
+      console.error(error);
+      response.status(404).send('Something went wrong');
+    });
 }
 
 export async function getUser(request, response) {
   const id = request.params.id;
-  const content = await findAll(usersPath);
-  const result = JSON.parse(content.toString())[id];
-  if (result) {
-    response.json(result);
-  } else {
-    response.send(`No user with id = ${id}`);
-  }
+  findById(usersPath, id)
+    .then(user => {
+      if (user) {
+        response.json(user);
+      } else {
+        response.status(404).send(`No user with id: ${id}`);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      response.status(404).send(`Something went wrong`);
+    });
 }

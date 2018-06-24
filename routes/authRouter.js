@@ -2,38 +2,29 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 
-import { findAll } from '../controllers/base';
+import { findOne } from '../controllers/base';
 import { getAllUsers } from '../controllers/user';
-import { CONFIG } from '../configs/app.config';
+import { CONFIG } from '../config/app.config';
 import facebookRouter from './facebookRouter';
 import googleRouter from './googleRouter';
 import twitterRouter from './twitterRouter';
 
-const credentialsPath = './models/credentials.json';
+const credentialsPath = 'Credential';
 
 const authRouter = express.Router();
 
 authRouter.post('/', async function(request, response) {
   const { login, password } = request.body;
-  const content = await findAll(credentialsPath);
-  const user = JSON.parse(content.toString())[login];
+  const user = await findOne(credentialsPath, 'login', login);
 
-  if (user === undefined || user.password !== password) {
-    const message = 'Not Found';
-    const data = {};
-    response.status(404).send({
-      code: 404,
-      data,
-      message,
-    });
-  } else {
+  if (user != null && user.password === password) {
     const payload = {
       user: {
         email: user.email,
         username: user.username,
       },
     };
-    const token = jwt.sign(payload, CONFIG.SECRET, { expiresIn: 30 });
+    const token = jwt.sign(payload, CONFIG.SECRET, { expiresIn: 3000 });
     const respanseMessage = {
       code: 200,
       message: 'OK',
@@ -41,6 +32,14 @@ authRouter.post('/', async function(request, response) {
       token,
     };
     response.send(respanseMessage);
+  } else {
+    const message = 'Not Found';
+    const data = {};
+    response.status(404).send({
+      code: 404,
+      data,
+      message,
+    });
   }
 });
 

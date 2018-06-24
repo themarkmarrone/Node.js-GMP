@@ -1,28 +1,18 @@
-import fs from 'fs';
-import { promisify } from 'util';
+import models from '../models';
 
-const readFileAsync = promisify(fs.readFile);
-const writeFileAsync = promisify(fs.writeFile);
-
-export function findAll(path) {
-  return readFileAsync(path).catch(error => {
-    console.log(error);
-  });
+export function findAll(tableName) {
+  return models[tableName].findAll({});
 }
 
-export function insertOne(path, entity) {
-  return readFileAsync(path).then(data => {
-    const jsonObject = JSON.parse(data);
-    const id =
-      entity.id != null && !isNaN(+entity.id)
-        ? entity.id
-        : Math.max(...Object.keys(jsonObject)) + 1;
-    entity.id = id;
-    const newJson = {
-      ...jsonObject,
-      [id]: entity
-    };
-    const newFile = JSON.stringify(newJson);
-    return writeFileAsync(path, newFile, 'utf-8').then(() => entity);
-  });
+export function findById(tableName, id) {
+  return models[tableName].findById(id);
+}
+
+export function findOne(tableName, column, value) {
+  console.log(models[tableName]);
+  return models[tableName].findOne({ where: { [column]: value } });
+}
+
+export function insertOne(tableName, entity) {
+  return models[tableName].create(entity);
 }
