@@ -1,18 +1,19 @@
-import models from '../models';
-
-export function findAll(tableName) {
-  return models[tableName].findAll({});
+export function findAll(model) {
+  return model.find({});
 }
 
-export function findById(tableName, id) {
-  return models[tableName].findById(id);
+export function findById(model, id) {
+  return model.findOne({ id });
 }
 
-export function findOne(tableName, column, value) {
-  console.log(models[tableName]);
-  return models[tableName].findOne({ where: { [column]: value } });
+export function deleteById(model, id) {
+  return model.findOneAndDelete({ id });
 }
 
-export function insertOne(tableName, entity) {
-  return models[tableName].create(entity);
+export function findOne(model, column, value) {
+  return model.findOne({ [column]: value });
+}
+
+export function updateOne(model, id, entity) {
+  return model.updateOne({ id }, entity);
 }

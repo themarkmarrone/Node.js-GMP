@@ -1,0 +1,19 @@
+{
+  "parser": "babylon",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "printWidth": 120,
+  "bracketSpacing": true,
+  "jsxBracketSameLine": true,
+  "overrides": [
+    {
+      "files": [".prettierrc", ".eslintrc", ".babelrc"],
+      "options": { "parser": "json" }
+    },
+    {
+      "files": "*.json",
+      "options": { "parser": "json" }
+    }
+  ]
+}

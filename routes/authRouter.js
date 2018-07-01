@@ -4,18 +4,17 @@ import passport from 'passport';
 
 import { findOne } from '../controllers/base';
 import { getAllUsers } from '../controllers/user';
+import { Credential } from '../models/credentials';
 import { CONFIG } from '../config/app.config';
 import facebookRouter from './facebookRouter';
 import googleRouter from './googleRouter';
 import twitterRouter from './twitterRouter';
 
-const credentialsPath = 'Credential';
-
 const authRouter = express.Router();
 
 authRouter.post('/', async function(request, response) {
   const { login, password } = request.body;
-  const user = await findOne(credentialsPath, 'login', login);
+  const user = await findOne(Credential, 'login', login);
 
   if (user != null && user.password === password) {
     const payload = {
@@ -32,6 +31,14 @@ authRouter.post('/', async function(request, response) {
       token,
     };
     response.send(respanseMessage);
+  } else if (user != null && user.password !== password) {
+    const message = 'Wrong password';
+    const data = {};
+    response.status(404).send({
+      code: 404,
+      data,
+      message,
+    });
   } else {
     const message = 'Not Found';
     const data = {};

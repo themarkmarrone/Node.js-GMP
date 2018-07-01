@@ -7,8 +7,11 @@ import { queryParserMiddleware } from './middlewares/queryParserMiddleware';
 import { errorMiddleware } from './middlewares/errorMiddleware';
 import { routes } from './routes/routes';
 import { Local, Facebook, Google, Twitter } from './strategies';
+import { connectToMongo } from './mongo';
 
 const app = express();
+
+connectToMongo();
 
 app.use(express.json());
 app.use(cookieParserMiddleware);

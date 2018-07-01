@@ -1,6 +1,11 @@
 export const CONFIG = {
   DEFAULT_PORT: 8080,
 
+  MONGO: {
+    url: 'mongodb://localhost:27017/homework',
+    db: 'homework',
+  },
+
   SECRET: 'secretWord',
 
   FACEBOOK: {
