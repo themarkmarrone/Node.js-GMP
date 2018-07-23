@@ -1,6 +1,6 @@
 import mongodb from 'mongodb';
 
-import { CONFIG } from '../config/app.config';
+import { CONFIG } from '../../config/app.config';
 import { City } from '../models/city';
 import * as baseControllers from './base';
 
@@ -79,8 +79,9 @@ export async function getCity(request, response) {
 
 export async function insertCity(request, response) {
   const city = request.body;
+  let cityDocument;
   try {
-    const cityDocument = await City.findOne().sort('-id');
+    cityDocument = await City.findOne().sort('-id');
   } catch (error) {
     console.error(error);
   }

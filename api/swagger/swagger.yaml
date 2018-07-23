@@ -1,0 +1,537 @@
+swagger: '2.0'
+info:
+  description: Homework 8 API
+  version: 1.0.0
+  title: Homework 8 API
+  # put the contact info for your development or API team
+  contact:
+    email: Andrei_Markovich@epam.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+host: localhost:10010
+basePath: /
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+# tags are used for organizing operations
+tags:
+- name: auth
+  description: Auth calls
+- name: cities
+  description: Citites calls
+- name: products
+  description: Products calls
+- name: users
+  description: Users calls
+- name: generate
+  description: Generate data calls
+  
+paths:
+  /auth:
+    x-swagger-router-controller: auth
+    post:
+      tags:
+      - auth
+      summary: gets JWT token for other routes
+      operationId: getAuth
+      description: Gets JWT token
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: credentials
+        description: Credentials to check
+        schema:
+          $ref: '#/definitions/AuthRequest'
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AuthResponse'
+        404:
+          description: Not found
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+              message:
+                type: string
+              data:
+                type: object
+  /cities:
+    x-swagger-router-controller: city
+    get:
+      tags:
+      - cities
+      summary: Returns all cities
+      description: Returns an array of cities
+      operationId: getAllCities
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+        404:
+          description: Something went wrong
+    post:
+      tags:
+      - cities
+      summary: Create city
+      description: Create city
+      operationId: insertCity
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Created city object
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      responses:
+        default:
+          description: successful operation
+  /cities/random:
+    x-swagger-router-controller: city
+    get:
+      tags:
+      - cities
+      summary: Returns random city
+      description: Returns random city
+      operationId: getMongooseRandomCity
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/City'
+        404:
+          description: Something went wrong
+  /cities/{cityId}:
+    x-swagger-router-controller: city
+    get:
+      tags:
+      - cities
+      summary: Returns city by id
+      description: Returns city by id
+      operationId: getCity
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/City'
+        404:
+          description: Something went wrong
+    put:
+      tags:
+      - cities
+      summary: Modify city by id
+      description: Modify city by id
+      operationId: updateCity
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: Updated city object
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Something went wrong
+    delete:
+      tags:
+      - cities
+      summary: Delete city by id
+      description: Delete city by id
+      operationId: deleteCity
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Something went wrong
+  /users:
+    x-swagger-router-controller: user
+    get:
+      tags:
+      - users
+      summary: Returns all users
+      description: Returns an array of users
+      operationId: getAllUsers
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        404:
+          description: Something went wrong
+    post:
+      tags:
+      - users
+      summary: Create user
+      description: Create user
+      operationId: insertUser
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Created user object
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        default:
+          description: successful operation
+  /users/{userId}:
+    x-swagger-router-controller: user
+    get:
+      tags:
+      - users
+      summary: Returns user by id
+      description: Returns user by id
+      operationId: getUser
+      produces:
+      - application/json
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/City'
+        404:
+          description: Something went wrong
+    put:
+      tags:
+      - users
+      summary: Modify user by id
+      description: Modify user by id
+      operationId: updateUser
+      produces:
+      - application/json
+      parameters:
+      - name: userId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: Updated user object
+        required: true
+        schema:
+          $ref: '#/definitions/City'
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Something went wrong
+    delete:
+      tags:
+      - users
+      summary: Delete user by id
+      description: Delete user by id
+      operationId: deleteUser
+      produces:
+      - application/json
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Something went wrong
+  /products:
+    x-swagger-router-controller: product
+    get:
+      tags:
+      - products
+      summary: Returns all products
+      description: Returns an array of products
+      operationId: getAllProducts
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        404:
+          description: Something went wrong
+    post:
+      tags:
+      - products
+      summary: Create product
+      description: Create product
+      operationId: insertProduct
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Created product object
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      responses:
+        default:
+          description: successful operation
+  /products/{productId}:
+    x-swagger-router-controller: product
+    get:
+      tags:
+      - products
+      summary: Returns product by id
+      description: Returns product by id
+      operationId: getProduct
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Product'
+        404:
+          description: Something went wrong
+    put:
+      tags:
+      - products
+      summary: Modify product by id
+      description: Modify product by id
+      operationId: updateProduct
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: Updated product object
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Something went wrong
+    delete:
+      tags:
+      - products
+      summary: Delete product by id
+      description: Delete product by id
+      operationId: deleteProduct
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: Something went wrong
+  /products/{productId}/reviews:
+    x-swagger-router-controller: product
+    get:
+      tags:
+      - products
+      summary: Returns reviews of product by id
+      description: Returns reviews of product by id
+      operationId: getProductReviews
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return its reviews
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items: 
+              type: string
+        404:
+          description: Something went wrong
+definitions:
+  User:
+    type: object
+    required:
+    - login
+    - password
+    properties:
+      login:
+        type: string
+        example: simple_login
+      password:
+        type: string
+        example: simple_password
+      username:
+        type: string
+        example: User Name
+      email: 
+        type: string
+        example: Username@mail.com
+      id:
+        type: number
+        example: 1
+  City:
+    type: object
+    required:
+    - id
+    - city
+    - country
+    properties:
+      id:
+        type: number
+        example: 1
+      city:
+        type: string
+        example: Minsk
+      admin:
+        type: string
+        example: ''
+      country:
+        type: string
+        example: Belarus
+      population_proper:
+        type: string
+        example: '1577138'
+      iso2:
+        type: string
+        example: 'BY'
+      capital:
+        type: string
+        example: primary
+      lat: 
+        type: string
+        example: '53.9'
+      lng:
+        type: string
+        example: '27.566667'
+      population:
+        type: string
+        example: '1805000'
+  Product:
+    type: object
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: number
+        example: 1
+      name:
+        type: string
+        example: Armand
+      reviews:
+        type: array
+        items:
+          type: string
+          example: Aut
+  AuthRequest:
+    type: object
+    properties:
+      login: 
+        type: string
+      password: 
+        type: string
+  AuthResponse:
+    type: object
+    properties:
+      code:
+        type: number
+      message:
+        type: string
+      data:
+        type: object
+        properties:
+          user:
+            type: object
+            properties:
+              email: 
+                type: string
+              username: 
+                type: string
+      token:
+        type: string
+# Added by API Auto Mocking Plugin
+schemes:
+  - http

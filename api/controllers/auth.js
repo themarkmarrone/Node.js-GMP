@@ -1,20 +1,12 @@
-import express from 'express';
 import jwt from 'jsonwebtoken';
-import passport from 'passport';
 
-import { findOne } from '../controllers/base';
-import { getAllUsers } from '../controllers/user';
+import * as baseControllers from './base';
 import { Credential } from '../models/credentials';
-import { CONFIG } from '../config/app.config';
-import facebookRouter from './facebookRouter';
-import googleRouter from './googleRouter';
-import twitterRouter from './twitterRouter';
+import { CONFIG } from '../../config/app.config';
 
-const authRouter = express.Router();
-
-authRouter.post('/', async function(request, response) {
+export async function getAuth(request, response) {
   const { login, password } = request.body;
-  const user = await findOne(Credential, 'login', login);
+  const user = await baseControllers.findOne(Credential, 'login', login);
 
   if (user != null && user.password === password) {
     const payload = {
@@ -48,12 +40,4 @@ authRouter.post('/', async function(request, response) {
       message,
     });
   }
-});
-
-authRouter.post('/users', passport.authenticate('local', { session: false }), getAllUsers);
-
-authRouter.use('/facebook', facebookRouter);
-authRouter.use('/google', googleRouter);
-authRouter.use('/twitter', twitterRouter);
-
-export default authRouter;
+}
